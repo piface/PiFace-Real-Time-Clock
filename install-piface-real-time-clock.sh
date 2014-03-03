@@ -2,19 +2,20 @@
 #: Description: Enables the required modules for PiFace Clock.
 
 #=======================================================================
-# NAME: get_revision
-# DESCRIPTION: Returns the revision number of this Raspberry Pi.
+# NAME: set_revision_var
+# DESCRIPTION: Stores the revision number of this Raspberry Pi into
+#              $RPI_REVISION
 #=======================================================================
-get_revision() {
+set_revision_var() {
     rev_str=$(grep "Revision" /proc/cpuinfo)
     # get the last character
     len_rev_str=${#rev_str}
     chr_index=$(($len_rev_str-1))
     chr=${rev_str:$chr_index:$len_rev_str}
     if [[ $chr == "2" || $chr == "3" ]]; then
-        $RPI_REVISION="1"
+        RPI_REVISION="1"
     else
-        $RPI_REVISION="2"
+        RPI_REVISION="2"
     fi
 }
 
@@ -48,7 +49,7 @@ start_on_boot() {
         i=1  # i2c-1
     fi
 
-    cat >> /etc/rc.local < EOF
+    cat >> /etc/rc.local << EOF
 modprobe i2c-dev
 modprobe i2c:mcp7941x
 echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
@@ -66,9 +67,9 @@ then
     exit 1
 fi
 RPI_REVISION=""
-set_revision_var
-enable_module
-start_on_boot
+set_revision_var &&
+enable_module &&
+start_on_boot &&
 printf 'Please *reboot* and then set your clock with:
 
     sudo date -s "14 JAN 2014 10:10:30"

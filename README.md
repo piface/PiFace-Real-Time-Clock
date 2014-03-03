@@ -6,7 +6,7 @@ Install
 =======
 Attach PiFace Clock and then run the install script:
 
-    $ curl address | sudo bash
+    $ curl https://github.com/piface/PiFace-Real-Time-Clock/install-piface-real-time-clock.sh | sudo bash
 
 Reboot and then set the correct date with:
 
