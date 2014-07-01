@@ -53,10 +53,6 @@ enable_module() {
 # DESCRIPTION: Load the I2C modules and send magic number to RTC, on boot.
 #=======================================================================
 start_on_boot() {
-    echo "Installing i2c-tools."
-    apt-get update
-    apt-get install i2c-tools
-
     echo "Changing /etc/rc.local to load time from PiFace Clock."
     # remove exit 0
     sed -i "s/exit 0//" /etc/rc.local
