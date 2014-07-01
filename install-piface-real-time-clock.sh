@@ -2,6 +2,21 @@
 #: Description: Enables the required modules for PiFace Clock.
 
 #=======================================================================
+# NAME: check_for_i2c_tools
+# DESCRIPTION: Checks if i2c-tools is installed.
+#=======================================================================
+check_for_i2c_tools() {
+    dpkg -s i2c-tools > /dev/null 2>&1
+    if [[ $? -eq 1 ]]; then
+        echo "The package `i2c-tools` is not installed. Install it with:"
+        echo ""
+        echo "    sudo apt-get install i2c-tools"
+        echo ""
+        exit 1
+    fi
+}
+
+#=======================================================================
 # NAME: set_revision_var
 # DESCRIPTION: Stores the revision number of this Raspberry Pi into
 #              $RPI_REVISION
@@ -71,6 +86,7 @@ then
     exit 1
 fi
 RPI_REVISION=""
+check_for_i2c_tools &&
 set_revision_var &&
 enable_module &&
 start_on_boot &&
