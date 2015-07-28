@@ -49,6 +49,10 @@ start_on_boot() {
         i=1  # i2c-1
     fi
 
+    if [[ ! -e /sys/class/i2c-dev/i2c-$i ]]; then
+        echo "Warning: you must enable i2c (use \`raspi-config\`, the \"Advanced Options\" section)."
+    fi
+
     cat >> /etc/rc.local << EOF
 modprobe i2c-dev
 modprobe i2c:mcp7941x
