@@ -38,15 +38,15 @@ set_revision_var() {
 # NAME: enable_module
 # DESCRIPTION: Enabled the I2C module.
 #=======================================================================
-enable_module() {
-    echo "Enabling I2C module."
-    module="i2c-bcm2708"
-    modules_file="/etc/modules"
-    # if $module not in $modules_file: append $module to $modules_file.
-    if ! grep -q $module $modules_file; then
-        echo $module >> $modules_file
-    fi
-}
+# enable_module() {
+#     echo "Enabling I2C module."
+#     module="i2c-bcm2708"
+#     modules_file="/etc/modules"
+#     # if $module not in $modules_file: append $module to $modules_file.
+#     if ! grep -q $module $modules_file; then
+#         echo $module >> $modules_file
+#     fi
+# }
 
 #=======================================================================
 # NAME: start_on_boot
@@ -85,10 +85,18 @@ fi
 RPI_REVISION=""
 check_for_i2c_tools &&
 set_revision_var &&
-enable_module &&
+# enable_module &&
 start_on_boot &&
-printf 'Please *reboot* and then set your clock with:
-
-    sudo date -s "14 JAN 2014 10:10:30"
-
-'
+if [[ ! -e /sys/class/i2c-dev/i2c-$i ]]; then
+    echo "Enable I2C by using:"
+    echo ""
+    echo "    raspi-config"
+    echo ""
+    echo "Then navigate to 'Advanced Options' > 'I2C' and select 'yes' to "
+    echo "enable the ARM I2C interface. Then *reboot* and set your clock "
+    echo "with:"
+else
+    echo "Now *reboot* and set your clock with:"
+fi
+echo ""
+echo '    sudo date -s "14 JAN 2014 10:10:30"'
