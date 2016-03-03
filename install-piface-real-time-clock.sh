@@ -35,20 +35,6 @@ set_revision_var() {
 }
 
 #=======================================================================
-# NAME: enable_module
-# DESCRIPTION: Enabled the I2C module.
-#=======================================================================
-# enable_module() {
-#     echo "Enabling I2C module."
-#     module="i2c-bcm2708"
-#     modules_file="/etc/modules"
-#     # if $module not in $modules_file: append $module to $modules_file.
-#     if ! grep -q $module $modules_file; then
-#         echo $module >> $modules_file
-#     fi
-# }
-
-#=======================================================================
 # NAME: start_on_boot
 # DESCRIPTION: Load the I2C modules and send magic number to RTC, on boot.
 #=======================================================================
@@ -69,7 +55,7 @@ modprobe i2c-dev
 i2cset -y $i 0x6f 0x08 0x47
 modprobe i2c:mcp7941x
 echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
-hwclock -s
+hwclock --hctosys
 EOF
 }
 
@@ -85,7 +71,6 @@ fi
 RPI_REVISION=""
 check_for_i2c_tools &&
 set_revision_var &&
-# enable_module &&
 start_on_boot &&
 if [[ ! -e /sys/class/i2c-dev/i2c-$i ]]; then
     echo "Enable I2C by using:"
@@ -100,3 +85,5 @@ else
 fi
 echo ""
 echo '    sudo date -s "14 JAN 2014 10:10:30"'
+echo "    hwclock --systohc"
+echo ""
