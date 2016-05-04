@@ -22,15 +22,15 @@ check_for_i2c_tools() {
 #              $RPI_REVISION
 #=======================================================================
 set_revision_var() {
-    rev_str=$(grep "Revision" /proc/cpuinfo)
-    # get the last character
-    len_rev_str=${#rev_str}
-    chr_index=$(($len_rev_str-1))
-    chr=${rev_str:$chr_index:$len_rev_str}
-    if [[ $chr == "2" || $chr == "3" ]]; then
-        RPI_REVISION="1"
-    else
+    revision=$(grep "Revision" /proc/cpuinfo | sed -e "s/Revision\t: //")
+    RPI2_REVISION=$((16#a01041))
+    RPI3_REVISION=$((16#a02082))
+    if [ "$((16#$revision))" -ge "$RPI3_REVISION" ]; then
+        RPI_REVISION="3"
+    elif [ "$((16#$revision))" -ge "$RPI2_REVISION" ]; then
         RPI_REVISION="2"
+    else
+        RPI_REVISION="1"
     fi
 }
 
@@ -39,25 +39,27 @@ set_revision_var() {
 # DESCRIPTION: Load the I2C modules and send magic number to RTC, on boot.
 #=======================================================================
 start_on_boot() {
-    echo "Create a new pifaceShimRtc init script to load time from PiFace Clock."
-    echo "Adding /etc/init.d/pifaceShimRtc."
-    
-    if [[ $RPI_REVISION == "1" ]]; then
-        i=0  # i2c-0
-    else
+    echo "Create a new pifacertc init script to load time from PiFace RTC."
+    echo "Adding /etc/init.d/pifacertc ."
+
+    if [[ $RPI_REVISION == "3" ]]; then
         i=1  # i2c-1
+    if [[ $RPI_REVISION == "2" ]]; then
+        i=1  # i2c-1
+    else
+        i=0  # i2c-0
     fi
 
-    cat > /etc/init.d/pifaceShimRtc << EOF
+    cat > /etc/init.d/pifacertc  << EOF
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          piface-shim-rtc
+# Provides:          piface-rtc
 # Required-Start:    udev mountkernfs \$remote_fs raspi-config
 # Required-Stop:
 # Default-Start:     S
 # Default-Stop:
-# Short-Description: Add the piface Shim RTC
-# Description:       Add the piface Shim RTC 
+# Short-Description: Add the PiFace RTC
+# Description:       Add the PiFace RTC
 ### END INIT INFO
 
 . /lib/lsb/init-functions
@@ -88,10 +90,10 @@ case "\$1" in
     ;;
 esac
 EOF
-    chmod +x /etc/init.d/pifaceShimRtc
+    chmod +x /etc/init.d/pifacertc
 
-    echo "Install the pifaceShimRtc init script"
-    update-rc.d pifaceShimRtc defaults
+    echo "Install the pifacertc init script"
+    update-rc.d pifacertc  defaults
 }
 
 #=======================================================================
