@@ -74,6 +74,7 @@ case "\$1" in
     log_success_msg "Probe the mcp7941x driver"
     modprobe i2c:mcp7941x
     log_success_msg "Add the mcp7941x device in the sys filesystem"
+    # https://www.kernel.org/doc/Documentation/i2c/instantiating-devices
     echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
     log_success_msg "Synchronize de system and hardware rtc clock"
     hwclock --hctosys
