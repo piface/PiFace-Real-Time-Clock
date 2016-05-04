@@ -27,3 +27,14 @@ Replace `14 JAN 2014 10:10:30` with today's date and time.
 Finally, save the system clock to the hardware clock with:
 
     hwclock --systohc
+
+## Old versions
+If you installed PiFace RTC using the old script (earlier than 2016-05-04)
+then you might need to **remove** the following lines from `/etc/rc.local`:
+
+    modprobe i2c-dev
+    # Calibrate the clock (default: 0x47). See datasheet for MCP7940N
+    i2cset -y 1 0x6f 0x08 0x47
+    modprobe i2c:mcp7941x
+    echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
+    hwclock --hctosys

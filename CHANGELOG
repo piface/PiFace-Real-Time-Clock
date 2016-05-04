@@ -1,0 +1,10 @@
+Change Log
+==========
+
+v0.2.0
+------
+- Loads RTC with `/etc/init.d/pifacertc` service.
+
+v0.1.0
+------
+- Inital version, loads RTC with `/etc/rc.local`.
