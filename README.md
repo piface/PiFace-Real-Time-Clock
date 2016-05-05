@@ -36,7 +36,7 @@ Finally, save the system clock to the hardware clock with:
 
 
 ## Starting and Stopping the Service
-After installing PiFace RTC will start as a service (`/etc/init.d/pifacertc`)
+After installing, PiFace RTC will start as a service (`/etc/init.d/pifacertc`)
 on boot. You can start, stop, enable on boot and disable on boot with the
 following commands:
 
