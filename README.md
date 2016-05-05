@@ -3,12 +3,17 @@ PiFace Real Time Clock is a Real Time Clock (RTC) for the Raspberry Pi.
 
 
 ## Install
-### Attach PiFace Clock
-[Download the install script](https://raw.github.com/piface/PiFace-Real-Time-Clock/master/install-piface-real-time-clock.sh) and copy it to your
+### Add the `pifacertc` service
+Attach PiFace Clock, [download the install script](https://raw.github.com/piface/PiFace-Real-Time-Clock/master/install-piface-real-time-clock.sh) and copy it to your
 SD card. Make the script executable and then run it:
 
     chmod +x install-piface-real-time-clock.sh
     sudo ./install-piface-real-time-clock.sh
+    
+Alternatively, if you have internet access then this one-liner should do the trick:
+    
+    wget https://raw.github.com/piface/PiFace-Real-Time-Clock/master/install-piface-real-time-clock.sh && chmod +x install-piface-real-time-clock.sh && sudo ./install-piface-real-time-clock.sh
+    
 
 ### Enable I2C
 Run:
