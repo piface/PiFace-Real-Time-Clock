@@ -1,6 +1,7 @@
 # PiFace Real Time Clock
 PiFace Real Time Clock is a Real Time Clock (RTC) for the Raspberry Pi.
 
+
 ## Install
 ### Attach PiFace Clock
 [Download the install script](https://raw.github.com/piface/PiFace-Real-Time-Clock/master/install-piface-real-time-clock.sh) and copy it to your
@@ -27,6 +28,18 @@ Replace `14 JAN 2014 10:10:30` with today's date and time.
 Finally, save the system clock to the hardware clock with:
 
     hwclock --systohc
+
+
+## Starting and Stopping the Service
+After installing PiFace RTC will start as a service (`/etc/init.d/pifacertc`)
+on boot. You can start, stop, enable on boot and disable on boot with the
+following commands:
+
+    sudo service pifacertc start
+    sudo service pifacertc stop
+    sudo service pifacertc defaults  # enable on boot
+    sudo service pifacertc remove    # disable on boot
+
 
 ## Old versions
 If you installed PiFace RTC using the old script (earlier than 2016-05-04)
