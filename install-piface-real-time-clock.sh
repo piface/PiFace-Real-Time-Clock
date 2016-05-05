@@ -44,7 +44,7 @@ start_on_boot() {
 
     if [[ $RPI_REVISION == "3" ]]; then
         i=1  # i2c-1
-    if [[ $RPI_REVISION == "2" ]]; then
+    elif [[ $RPI_REVISION == "2" ]]; then
         i=1  # i2c-1
     else
         i=0  # i2c-0
