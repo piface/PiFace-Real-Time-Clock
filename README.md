@@ -18,7 +18,7 @@ Alternatively, if you have internet access then this one-liner should do the tri
 ### Enable I2C
 Run:
 
-    raspi-config
+    sudo raspi-config
 
 Then navigate to `Advanced Options` > `I2C` and select `yes` to enable the ARM I2C interface.
 
