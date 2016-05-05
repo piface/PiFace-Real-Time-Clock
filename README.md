@@ -32,7 +32,7 @@ Replace `14 JAN 2014 10:10:30` with today's date and time.
 ### Set the hardware clock
 Finally, save the system clock to the hardware clock with:
 
-    hwclock --systohc
+    sudo hwclock --systohc
 
 
 ## Starting and Stopping the Service
