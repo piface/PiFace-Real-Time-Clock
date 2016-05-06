@@ -53,7 +53,7 @@ start_on_boot() {
     cat > /etc/init.d/pifacertc  << EOF
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          piface-rtc
+# Provides:          pifacertc
 # Required-Start:    udev mountkernfs \$remote_fs raspi-config
 # Required-Stop:
 # Default-Start:     S
