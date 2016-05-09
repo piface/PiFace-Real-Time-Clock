@@ -76,7 +76,7 @@ case "\$1" in
     log_success_msg "Add the mcp7941x device in the sys filesystem"
     # https://www.kernel.org/doc/Documentation/i2c/instantiating-devices
     echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
-    log_success_msg "Synchronize de system and hardware rtc clock"
+    log_success_msg "Synchronise the system clock and hardware RTC"
     hwclock --hctosys
     ;;
   stop)
