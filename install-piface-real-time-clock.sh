@@ -62,7 +62,7 @@ start_on_boot() {
 # Provides:          pifacertc
 # Required-Start:    udev mountkernfs \$remote_fs raspi-config
 # Required-Stop:
-# Default-Start:     2 3 4 5
+# Default-Start:     S
 # Default-Stop:
 # Short-Description: Add the PiFace RTC
 # Description:       Add the PiFace RTC
@@ -130,4 +130,10 @@ fi
 echo ""
 echo '    sudo date -s "14 JAN 2014 10:10:30"'
 echo "    sudo hwclock --systohc"
+echo ""
+echo "Enable auto-sync on boot by enabling the service"
+echo "    sudo systemctl enable pifacertc"
+echo ""
+echo "Check service status"
+echo "    sudo systemctl status pifacertc"
 echo ""
