@@ -25,7 +25,11 @@ set_revision_var() {
     revision=$(grep "Revision" /proc/cpuinfo | sed -e "s/Revision\t: //")
     RPI2_REVISION=$((16#a01041))
     RPI3_REVISION=$((16#a02082))
-    if [ "$((16#$revision))" -ge "$RPI3_REVISION" ]; then
+    RPI4_REVISION=$((16#a03111))
+
+    if [ "$((16#$revision))" -ge "$RPI4_REVISION" ]; then
+        RPI_REVISION="4"
+    elif [ "$((16#$revision))" -ge "$RPI3_REVISION" ]; then
         RPI_REVISION="3"
     elif [ "$((16#$revision))" -ge "$RPI2_REVISION" ]; then
         RPI_REVISION="2"
@@ -42,7 +46,9 @@ start_on_boot() {
     echo "Create a new pifacertc init script to load time from PiFace RTC."
     echo "Adding /etc/init.d/pifacertc ."
 
-    if [[ $RPI_REVISION == "3" ]]; then
+    if [[ $RPI_REVISION == "4" ]]; then
+        i=1  # i2c-1
+    elif [[ $RPI_REVISION == "3" ]]; then
         i=1  # i2c-1
     elif [[ $RPI_REVISION == "2" ]]; then
         i=1  # i2c-1
@@ -56,7 +62,7 @@ start_on_boot() {
 # Provides:          pifacertc
 # Required-Start:    udev mountkernfs \$remote_fs raspi-config
 # Required-Stop:
-# Default-Start:     S
+# Default-Start:     2 3 4 5
 # Default-Stop:
 # Short-Description: Add the PiFace RTC
 # Description:       Add the PiFace RTC
@@ -94,7 +100,7 @@ EOF
     chmod +x /etc/init.d/pifacertc
 
     echo "Install the pifacertc init script"
-    update-rc.d pifacertc  defaults
+    update-rc.d pifacertc defaults
 }
 
 #=======================================================================
