@@ -43,8 +43,8 @@ set_revision_var() {
 # DESCRIPTION: Load the I2C modules and send magic number to RTC, on boot.
 #=======================================================================
 start_on_boot() {
-    echo "Create a new pifacertc init script to load time from PiFace RTC."
-    echo "Adding /etc/init.d/pifacertc ."
+    echo "Creating a new script and systemd service file to load time from PiFace RTC."
+    echo "Adding /usr/local/bin/pifacertc.sh"
 
     if [[ $RPI_REVISION == "4" ]]; then
         i=1  # i2c-1
@@ -56,51 +56,41 @@ start_on_boot() {
         i=0  # i2c-0
     fi
 
-    cat > /etc/init.d/pifacertc  << EOF
+    cat > /usr/local/bin/pifacertc.sh  << EOF
 #!/bin/sh
-### BEGIN INIT INFO
-# Provides:          pifacertc
-# Required-Start:    udev mountkernfs \$remote_fs raspi-config
-# Required-Stop:
-# Default-Start:     S
-# Default-Stop:
-# Short-Description: Add the PiFace RTC
-# Description:       Add the PiFace RTC
-### END INIT INFO
 
 . /lib/lsb/init-functions
 
-case "\$1" in
-  start)
-    log_success_msg "Probe the i2c-dev"
-    modprobe i2c-dev
-    # Calibrate the clock (default: 0x47). See datasheet for MCP7940N
-    log_success_msg "Calibrate the clock"
-    i2cset -y $i 0x6f 0x08 0x47
-    log_success_msg "Probe the mcp7941x driver"
-    modprobe i2c:mcp7941x
-    log_success_msg "Add the mcp7941x device in the sys filesystem"
-    # https://www.kernel.org/doc/Documentation/i2c/instantiating-devices
-    echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
-    log_success_msg "Synchronise the system clock and hardware RTC"
-    hwclock --hctosys
-    ;;
-  stop)
-    ;;
-  restart)
-    ;;
-  force-reload)
-    ;;
-  *)
-    echo "Usage: \$0 start" >&2
-    exit 3
-    ;;
-esac
+log_success_msg "Probe the i2c-dev"
+modprobe i2c-dev
+# Calibrate the clock (default: 0x47). See datasheet for MCP7940N
+log_success_msg "Calibrate the clock"
+i2cset -y $i 0x6f 0x08 0x47
+log_success_msg "Probe the mcp7941x driver"
+modprobe i2c:mcp7941x
+log_success_msg "Add the mcp7941x device in the sys filesystem"
+# https://www.kernel.org/doc/Documentation/i2c/instantiating-devices
+echo mcp7941x 0x6f > /sys/class/i2c-dev/i2c-$i/device/new_device
+log_success_msg "Synchronise the system clock and hardware RTC"
+hwclock --hctosys
 EOF
-    chmod +x /etc/init.d/pifacertc
+    chmod +x /usr/local/bin/pifacertc.sh
 
-    echo "Install the pifacertc init script"
-    update-rc.d pifacertc defaults
+    echo "Adding /etc/systemd/system/pifacertc.service"
+    cat > /etc/systemd/system/pifacertc.service  << EOF
+[Unit]
+Description=PiFace Shim RTC
+
+[Service]
+ExecStart=/usr/local/bin/pifacertc.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    echo "Installing and starting the pifacertc systemd service"
+    systemctl daemon-reload
+    systemctl enable pifacertc.service
+    systemctl start pifacertc.service
 }
 
 #=======================================================================
